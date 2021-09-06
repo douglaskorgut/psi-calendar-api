@@ -1,4 +1,4 @@
-package com.psi.calendar.psicalendarapi;
+package com.psi.calendar.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

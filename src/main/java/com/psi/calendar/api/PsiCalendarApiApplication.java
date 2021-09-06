@@ -1,4 +1,4 @@
-package com.psi.calendar.psicalendarapi;
+package com.psi.calendar.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
