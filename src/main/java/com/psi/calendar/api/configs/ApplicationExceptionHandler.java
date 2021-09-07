@@ -1,6 +1,7 @@
 package com.psi.calendar.api.configs;
 
 import com.psi.calendar.api.exceptions.InvalidCredentialsException;
+import com.psi.calendar.api.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,5 +18,13 @@ public class ApplicationExceptionHandler {
     )
     @ExceptionHandler(InvalidCredentialsException.class)
     public void handleException(ServletException e) {
+    }
+
+    @ResponseStatus(
+            value = HttpStatus.NO_CONTENT,
+            reason = "Couldn't find user data with given username"
+    )
+    @ExceptionHandler(UserNotFoundException.class)
+    public void handleException(UserNotFoundException e) {
     }
 }
