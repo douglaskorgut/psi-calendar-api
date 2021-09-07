@@ -1,9 +1,12 @@
 package com.psi.calendar.api.filters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.psi.calendar.api.exceptions.JwtException;
 import com.psi.calendar.api.services.IJwtService;
 import com.psi.calendar.api.services.impl.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.psi.calendar.api.contants.HttpProtocolConstants.AUTH_URI;
 
@@ -34,7 +39,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         // If req is on auth uri, proceed without executing filter
-        if (req.getRequestURI().equals(AUTH_URI)) {
+        if (req.getRequestURI().contains(AUTH_URI)) {
             filterChain.doFilter(req, res);
             return;
         }
@@ -42,8 +47,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final var authHeader = req.getHeader("Authorization");
 
         // Check if jwt was passed in upon request Authorization token
-        if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("Bearer "))
-            throw new ServletException("Unable to find Authorization header on request");
+        if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("Bearer ")){
+            res.setStatus(HttpStatus.UNAUTHORIZED.value());
+            res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            res.setCharacterEncoding("UTF-8");
+
+            var mapper = new ObjectMapper();
+            res.getWriter().write(mapper.writeValueAsString(Map.of("error", "Jwt not found")));
+            return;
+        }
+
 
         // Remove "Bearer " and leave just the jwt
         final var jwt = authHeader.substring(7);

@@ -1,5 +1,6 @@
 package com.psi.calendar.api.controllers;
 
+import com.psi.calendar.api.exceptions.InvalidCredentialsException;
 import com.psi.calendar.api.models.dto.auth.AuthRequestDTO;
 import com.psi.calendar.api.models.dto.auth.AuthResponseDTO;
 import com.psi.calendar.api.services.IJwtService;
@@ -33,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthToken(@RequestBody AuthRequestDTO authRequest) throws Exception {
+    public ResponseEntity<?> createAuthToken(@RequestBody AuthRequestDTO authRequest) throws InvalidCredentialsException {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -41,7 +42,7 @@ public class AuthController {
                     )
             );
         } catch (AuthenticationException e){
-            throw new Exception("Incorrect username or password", e);
+            throw new InvalidCredentialsException("Incorrect username or password");
         }
 
         var jwt = jwtService.generateToken(
