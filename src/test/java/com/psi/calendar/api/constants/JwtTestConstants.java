@@ -2,4 +2,5 @@ package com.psi.calendar.api.constants;
 
 public class JwtTestConstants {
     public static final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmb28iLCJleHAiOjE2MzEwMjIzMTMsImlhdCI6MTYzMDk4NjMxM30.SkpR8hVNKcWN7MRdjSz1eGjhT7GL4j_opcDQesxDzRU";
+    public static final String INVALID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2MzA5ODU5OTcsImV4cCI6MTY2MjUyMTk5NywiYXVkIjoiXSIsInN1YiI6Impyb2NrZXRAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6ImRvdWdsYXMiLCJwYXNzd29yZCI6InRlc3QifQ.73SGRbbc0L_tRN7yvVeI1-kvQwpYc7yal0QXXHBphzY";
 }
