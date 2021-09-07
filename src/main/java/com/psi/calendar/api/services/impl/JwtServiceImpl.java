@@ -1,9 +1,11 @@
 package com.psi.calendar.api.services.impl;
 
+import com.psi.calendar.api.exceptions.JwtException;
 import com.psi.calendar.api.services.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +17,15 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements IJwtService {
 
-    private String SECRET_KEY = "my-super-secret-key";
+    private final String SECRET_KEY = "my-super-secret-key";
 
     @Override
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public String extractUsername(String token) throws JwtException {
+        try {
+            return extractClaim(token, Claims::getSubject);
+        } catch (SignatureException e){
+            throw new JwtException("Could not extract username from token. Error: " + e.getMessage());
+        }
     }
 
     @Override
@@ -34,7 +40,7 @@ public class JwtServiceImpl implements IJwtService {
     }
 
     @Override
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, UserDetails userDetails) throws JwtException {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
