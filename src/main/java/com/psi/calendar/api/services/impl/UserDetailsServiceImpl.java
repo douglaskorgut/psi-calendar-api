@@ -1,4 +1,4 @@
-package com.psi.calendar.api.services;
+package com.psi.calendar.api.services.impl;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
