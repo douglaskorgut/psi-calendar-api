@@ -1,7 +1,10 @@
 package com.psi.calendar.api.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.psi.calendar.api.filters.JwtRequestFilter;
 import com.psi.calendar.api.models.dto.auth.AuthRequestDTO;
+import com.psi.calendar.api.models.dto.auth.AuthResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -26,6 +30,9 @@ public class AuthControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+
+    @Autowired
     private WebApplicationContext webApplicationContext;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -33,7 +40,7 @@ public class AuthControllerTests {
     public void init()
     {
         //Init MockMvc Object and build
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).addFilter(this.jwtRequestFilter).build();
     }
 
     @Test
@@ -52,5 +59,12 @@ public class AuthControllerTests {
                 .andExpect(
                         content().string(containsString("jwt"))
                 );
+    }
+
+    @Test
+    public void itShouldReturn403statusCode_whenInvalidJwtIsSentUponProtectedRoute() throws Exception {
+        this.mockMvc.perform(get("/hello"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 }
