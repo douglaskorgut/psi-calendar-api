@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ApplicationExceptionHandler {
 
     @ResponseStatus(
-            value = HttpStatus.FORBIDDEN,
+            value = HttpStatus.UNAUTHORIZED,
             reason = "Invalid credentials"
     )
     @ExceptionHandler(InvalidCredentialsException.class)
