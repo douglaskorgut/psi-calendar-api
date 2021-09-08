@@ -21,7 +21,7 @@ public class ApplicationExceptionHandler {
     }
 
     @ResponseStatus(
-            value = HttpStatus.NO_CONTENT,
+            value = HttpStatus.BAD_REQUEST,
             reason = "Couldn't find user data with given username"
     )
     @ExceptionHandler(UserNotFoundException.class)

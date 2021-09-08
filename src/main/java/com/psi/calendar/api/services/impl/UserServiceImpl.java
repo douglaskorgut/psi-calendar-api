@@ -20,7 +20,13 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User findUser(String username) throws UserNotFoundException {
         try {
-            return this.userRepository.findUserByUsername(username);
+            // Find user on database
+            var user = this.userRepository.findUserByUsername(username);
+
+            // If no user found, throw
+            if (user == null) throw new Exception();
+
+            return user;
         } catch (Exception e){
             throw new UserNotFoundException("Couldn't find user with given username: " + username);
         }
