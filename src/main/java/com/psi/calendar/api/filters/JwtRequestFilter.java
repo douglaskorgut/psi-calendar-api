@@ -88,9 +88,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         } catch (JwtException e) {
-            throw new ServletException(e.getMessage());
+            res.setStatus(HttpStatus.BAD_REQUEST.value());
+            res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            res.setCharacterEncoding("UTF-8");
+
+            var mapper = new ObjectMapper();
+            res.getWriter().write(mapper.writeValueAsString(Map.of("error", "Unable to validate jwt")));
         } catch (UsernameNotFoundException e) {
-            throw new ServletException("Invalid jwt: " + e.getMessage());
+            res.setStatus(HttpStatus.UNAUTHORIZED.value());
+            res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            res.setCharacterEncoding("UTF-8");
+
+            var mapper = new ObjectMapper();
+            res.getWriter().write(mapper.writeValueAsString(Map.of("error", "Unable to validate user on jwt")));
         } finally {
             filterChain.doFilter(req, res);
         }
