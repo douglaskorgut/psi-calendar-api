@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.psi.calendar.api.contants.HttpProtocolConstants.AUTH_URI;
@@ -94,6 +93,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             var mapper = new ObjectMapper();
             res.getWriter().write(mapper.writeValueAsString(Map.of("error", "Unable to validate jwt")));
+            return;
         } catch (UsernameNotFoundException e) {
             res.setStatus(HttpStatus.UNAUTHORIZED.value());
             res.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -101,8 +101,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             var mapper = new ObjectMapper();
             res.getWriter().write(mapper.writeValueAsString(Map.of("error", "Unable to validate user on jwt")));
-        } finally {
-            filterChain.doFilter(req, res);
+            return;
         }
+
+        filterChain.doFilter(req, res);
+
     }
 }
