@@ -45,7 +45,7 @@ public class AuthControllerTests {
 
     @Test
     public void itShouldReturnJwt() throws Exception {
-        var requestBody = AuthRequestDTO.builder().username("foo").password("foo").build();
+        var requestBody = AuthRequestDTO.builder().username("douglas").password("password").build();
         var jsonRequestBody = mapper.writeValueAsString(requestBody);
 
         this.mockMvc.perform(
@@ -62,8 +62,23 @@ public class AuthControllerTests {
     }
 
     @Test
-    public void itShouldReturn403statusCode_whenInvalidJwtIsSentUponProtectedRoute() throws Exception {
-        this.mockMvc.perform(get("/hello"))
+    public void itShouldReturn403statusCode_whenInvalidJwtIsSentUponProtectedApi() throws Exception {
+        this.mockMvc.perform(get("/user"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void itShouldReturn401statusCode_whenInvalidCredentialsAreSentOnValidateApi() throws Exception {
+        var requestBody = AuthRequestDTO.builder().username("invalid_username").password("invalid_password").build();
+        var jsonRequestBody = mapper.writeValueAsString(requestBody);
+
+        this.mockMvc.perform(
+                        post("/authenticate")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding("utf-8")
+                                .content(jsonRequestBody)
+                )
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
