@@ -1,5 +1,6 @@
 package com.psi.calendar.api.services.impl;
 
+import com.psi.calendar.api.repository.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,8 +12,18 @@ import java.util.ArrayList;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private final UserRepository userRepository;
+
+    public UserDetailsServiceImpl(final UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new User("foo", "foo", new ArrayList<>());
+        final var user = this.userRepository.findUserByUsername(username);
+
+        if (user == null) throw new UsernameNotFoundException("User " + username + " not found");
+
+        return new User(user.getUsername(), user.getPassword(), new ArrayList<>());
     }
 }

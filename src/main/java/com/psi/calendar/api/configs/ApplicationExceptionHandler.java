@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.ServletException;
-
 @ControllerAdvice
 public class ApplicationExceptionHandler {
 
@@ -17,7 +15,7 @@ public class ApplicationExceptionHandler {
             reason = "Invalid credentials"
     )
     @ExceptionHandler(InvalidCredentialsException.class)
-    public void handleException(ServletException e) {
+    public void handleException(InvalidCredentialsException e) {
     }
 
     @ResponseStatus(
